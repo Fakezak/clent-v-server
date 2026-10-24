@@ -1,5 +1,5 @@
-import http from 'http';
-import { Server } from 'socket.io';
+const http = require('http');
+const { Server } = require('socket.io');
 
 const server = http.createServer();
 
@@ -19,4 +19,4 @@ io.on('connection', (socket) => {
   });
 });
 
-export default server;
+module.exports = server;
