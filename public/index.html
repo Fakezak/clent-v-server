@@ -9,6 +9,7 @@
   <h1 id="status">connecting...</h1>
 
   <script>
+    // Connect using the exact Vercel API path
     const socket = io('/', {
       path: '/api/socket/socket.io',
       transports: ['websocket'],
@@ -19,8 +20,9 @@
       socket.emit("player_ready");
     });
 
-    socket.on("connect_error", () => {
-      document.getElementById("status").textContent = "error";
+    socket.on("connect_error", (err) => {
+      // If it errors, show exactly why
+      document.getElementById("status").textContent = "error: " + err.message;
     });
   </script>
 </body>
