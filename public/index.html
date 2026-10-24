@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Notify Test</title>
+  <script src="/socket.io/socket.io.js"></script>
+  <style>
+    #toasts { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); }
+    .toast { margin: 8px 0; padding: 12px 20px; border-radius: 8px; font-weight: bold; }
+    .green_text { background: #0a7d32; color: #fff; }
+  </style>
+</head>
+<body>
+  <h2>Socket Test</h2>
+  <p>ID: <code id="sid">connecting...</code></p>
+  <button onclick="login()">Simulate Login</button>
+  <div id="toasts"></div>
+
+  <script>
+    const socket = io('/', {
+      path: '/api/socket/socket.io',
+      transports: ['websocket'],
+    });
+
+    socket.on('connect', () => {
+      document.getElementById('sid').textContent = socket.id;
+      login();
+    });
+
+    socket.on('system_notification', (msg) => {
+      const el = document.createElement('div');
+      el.className = `toast ${msg.display_style}`;
+      el.textContent = msg.content;
+      document.getElementById('toasts').appendChild(el);
+      setTimeout(() => el.remove(), msg.duration || 5000);
+    });
+
+    function login() {
+      socket.emit('player_ready');
+    }
+  </script>
+</body>
+</html>
