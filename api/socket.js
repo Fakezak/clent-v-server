@@ -1,5 +1,5 @@
-const http = require('http');
-const { Server } = require('socket.io');
+import http from 'http';
+import { Server } from 'socket.io';
 
 const server = http.createServer();
 
@@ -19,4 +19,5 @@ io.on('connection', (socket) => {
   });
 });
 
-module.exports = server;
+// Export the server properly for Vercel
+export default server;
