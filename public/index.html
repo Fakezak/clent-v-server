@@ -2,27 +2,40 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>Notify</title>
-  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <title>Notify Test</title>
+  <!-- Standard Socket.IO script provided by the server -->
+  <script src="/socket.io/socket.io.js"></script>
+  <style>
+    body { font-family: system-ui, sans-serif; padding: 24px; }
+    #toasts { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); }
+    .toast { margin: 8px 0; padding: 12px 20px; border-radius: 8px; font-weight: bold; }
+    .green_text { background: #0a7d32; color: #fff; }
+  </style>
 </head>
 <body>
   <h1 id="status">connecting...</h1>
+  <div id="toasts"></div>
 
   <script>
-    // Connect using the exact Vercel API path
-    const socket = io('/', {
-      path: '/api/socket/socket.io',
-      transports: ['websocket'],
-    });
+    // Standard connection (no API paths needed)
+    const socket = io();
 
     socket.on("connect", () => {
       document.getElementById("status").textContent = "ok";
+      // Trigger the welcome message
       socket.emit("player_ready");
     });
 
     socket.on("connect_error", (err) => {
-      // If it errors, show exactly why
       document.getElementById("status").textContent = "error: " + err.message;
+    });
+
+    socket.on("system_notification", (msg) => {
+      const el = document.createElement("div");
+      el.className = `toast ${msg.display_style}`;
+      el.textContent = msg.content;
+      document.getElementById("toasts").appendChild(el);
+      setTimeout(() => el.remove(), msg.duration || 5000);
     });
   </script>
 </body>
